@@ -1,0 +1,40 @@
+FROM gcr.io/jenkinsxio/builder-base:0.0.83
+
+CMD ["gradle"]
+
+ENV ANDROID_VERSION 4333796
+ENV ANDROID_HOME /opt/android-sdk-linux
+ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
+
+RUN yum install -y java-11-openjdk-devel
+
+ENV GRADLE_HOME /opt/gradle
+ENV GRADLE_VERSION 6.5.1
+
+RUN set -o errexit -o nounset \
+    && echo "Set URLS" \
+    && GRADLE_URL="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
+    && SHA256_URL="${GRADLE_URL}.sha256" \
+    \
+    && echo "Determine sha256sum" \
+    && GRADLE_DOWNLOAD_SHA256=$(curl -sLf "${SHA256_URL}") \
+    \
+	&& echo "Downloading Gradle" \
+	&& wget -q -O gradle.zip "${GRADLE_URL}" \
+	\
+	&& echo "Checking download hash" \
+	&& echo "${GRADLE_DOWNLOAD_SHA256} *gradle.zip" | sha256sum -c - \
+	\
+	&& echo "Installing Gradle" \
+	&& unzip -q gradle.zip \
+	&& rm gradle.zip \
+	&& mkdir -p /opt \
+	&& mv "gradle-${GRADLE_VERSION}" "${GRADLE_HOME}/" \
+	&& ln -s "${GRADLE_HOME}/bin/gradle" /usr/bin/gradle
+
+RUN gradle --version
+
+# jx
+ENV JX_VERSION 2.1.153
+RUN curl -f -L https://github.com/jenkins-x/jx/releases/download/v${JX_VERSION}/jx-linux-amd64.tar.gz | tar xzv && \
+  mv jx /usr/bin/
