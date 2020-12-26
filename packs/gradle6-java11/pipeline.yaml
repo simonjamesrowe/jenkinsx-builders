@@ -22,3 +22,6 @@ pipelines:
       steps:
         - sh: gradle clean build
           name: gradle-build
+    postBuild:
+      steps:
+        - sh: gradle deploy -Pversion=\$(cat VERSION)
