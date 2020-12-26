@@ -3,7 +3,7 @@ extends:
   file: pipeline.yaml
 agent:
   label: jenkins-gradle6-java11
-  container: gradle
+  container: gradle6-java11
 pipelines:
   pullRequest:
     build:
