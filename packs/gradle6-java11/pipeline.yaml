@@ -25,3 +25,4 @@ pipelines:
     postBuild:
       steps:
         - sh: gradle publish -Pversion=\$(cat VERSION)
+          name: gradle-publish
