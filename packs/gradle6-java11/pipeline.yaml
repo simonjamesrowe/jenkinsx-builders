@@ -10,7 +10,7 @@ pipelines:
           comment: so we can retrieve the version in later steps
     build:
       steps:
-        - sh: gradle -I /home/jenkins/.gradle/init.gradle clean build publish
+        - sh: gradle -I /home/jenkins/.gradle/init.gradle clean build publish --info
           name: gradle-build
   release:
     setVersion:
