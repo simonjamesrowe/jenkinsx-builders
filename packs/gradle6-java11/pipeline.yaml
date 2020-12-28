@@ -10,6 +10,8 @@ pipelines:
           comment: so we can retrieve the version in later steps
     build:
       steps:
+        - sh: systemctl start docker
+          name: start docker
         - sh: docker version
           name: docker-version
         - sh: gradle -I /home/jenkins/.gradle/init.gradle clean build publish --info
