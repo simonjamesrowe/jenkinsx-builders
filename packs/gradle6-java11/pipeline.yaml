@@ -10,7 +10,7 @@ pipelines:
           comment: so we can retrieve the version in later steps
     build:
       steps:
-        - sh: gradle -I /home/jenkins/.gradle/init.gradle clean build publish --info
+        - sh: gradle -I /home/jenkins/.gradle/init.gradle clean build publish -Pversion=\$(cat VERSION) --info
           name: gradle-build
   release:
     setVersion:
@@ -22,9 +22,5 @@ pipelines:
           name: tag-version
     build:
       steps:
-        - sh: gradle clean build
+        - sh: gradle -I /home/jenkins/.gradle/init.gradle clean build publish -Pversion=\$(cat VERSION) --info
           name: gradle-build
-    postBuild:
-      steps:
-        - sh: gradle -I /home/jenkins/.gradle/init.gradle publish -Pversion=\$(cat VERSION)
-          name: gradle-publish
