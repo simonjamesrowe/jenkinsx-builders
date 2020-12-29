@@ -3,13 +3,11 @@ agent:
   container: gradle6-java11
 pipelines:
   pullRequest:
-    setVersion:
+    build:
       steps:
         - sh: echo \$(jx-release-version)-SNAPSHOT > VERSION
           name: next-version
           comment: so we can retrieve the version in later steps
-    build:
-      steps:
         - sh: gradle -I /home/jenkins/.gradle/init.gradle clean build publish -Pversion=\$(cat VERSION) --info
           name: gradle-build
   release:
