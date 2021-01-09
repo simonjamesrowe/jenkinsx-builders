@@ -1,6 +1,5 @@
 extends:
-  import: classic
-  file: gradle6-java11/pipeline.yaml
+  file: ../gradle6-java11/pipeline.yaml
 pipelines:
   pullRequest:
     build:
