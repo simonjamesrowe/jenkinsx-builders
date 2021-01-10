@@ -3,7 +3,13 @@ extends:
 pipelines:
   pullRequest:
     build:
+      replace: true
       steps:
+      - sh: echo \$(jx-release-version)-SNAPSHOT > VERSION
+        name: next-version
+        comment: so we can retrieve the version in later steps
+      - sh: gradle -I /home/jenkins/.gradle/init.gradle clean build -Pversion=\$(cat VERSION) --info
+        name: gradle-build
       - sh: export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml
         name: container-build
     postBuild:
@@ -21,7 +27,10 @@ pipelines:
 
   release:
     build:
+      replace: true
       steps:
+      - sh: gradle -I /home/jenkins/.gradle/init.gradle clean build -Pversion=\$(cat VERSION) --info
+        name: gradle-build
       - sh: export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml
         name: container-build
       - sh: jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)
