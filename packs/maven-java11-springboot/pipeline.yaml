@@ -31,8 +31,6 @@ pipelines:
     build:
       replace: true
       steps:
-        - sh: env
-          name: debug-env-variables
         - sh: mvn spring-boot:build-image
           name: container-build
         - sh: docker push $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)
