@@ -31,7 +31,7 @@ pipelines:
     build:
       replace: true
       steps:
-        - sh: ls -las $DOCKER_CONFIG && cat $DOCKER_CONFIG
+        - sh: ls -las $DOCKER_CONFIG && cat $DOCKER_CONFIG/config.json
           name: docker-config
         - sh: mvn spring-boot:build-image
           name: container-build
