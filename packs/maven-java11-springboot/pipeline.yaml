@@ -8,6 +8,7 @@ agent:
 pipelines:
   pullRequest:
     build:
+      replace: true
       steps:
         - sh: mvn spring-boot:build-image
           name: container-build
@@ -26,6 +27,7 @@ pipelines:
 
   release:
     build:
+      replace: true
       steps:
         - sh: mvn spring-boot:build-image
           name: container-build
