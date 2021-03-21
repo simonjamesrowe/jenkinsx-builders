@@ -1,0 +1,58 @@
+agent:
+  label: jenkins-gradle6-graalvm-java11
+  container: gradle6-graalvm-java11
+pipelines:
+  pullRequest:
+    build:
+      steps:
+      - sh: echo \$(jx-release-version)-SNAPSHOT > VERSION
+        name: next-version
+        comment: so we can retrieve the version in later steps
+      - sh: cp /home/jenkins/.gradle/gradle.properties gradle.properties
+        name: copy-gradle-properties
+      - sh: gradle -I /home/jenkins/.gradle/init.gradle build sonarqube bootBuildImage -Pversion=\$(cat VERSION) --info
+        name: gradle-build
+      - sh: docker image push $DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:\$(cat VERSION)
+        name: container-push
+    postBuild:
+      steps:
+      - sh: jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION
+        name: post-build
+    promote:
+      steps:
+      - dir: ./charts/preview
+        steps:
+        - sh: make preview
+          name: make-preview
+        - sh: jx preview --app $APP_NAME --dir ../..
+          name: jx-preview
+  release:
+    setVersion:
+      steps:
+        - sh: echo \$(jx-release-version) > VERSION
+          name: next-version
+          comment: so we can retrieve the version in later step
+        - sh: jx step tag --version \$(cat VERSION)
+          name: tag-version
+    build:
+      steps:
+      - sh: cp /home/jenkins/.gradle/gradle.properties gradle.properties
+        name: copy-gradle-properties
+      - sh: gradle -I /home/jenkins/.gradle/init.gradle build sonarqube bootBuildImage -Pversion=\$(cat VERSION) --info
+        name: gradle-build
+      - sh: docker image push $DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:\$(cat VERSION)
+        name: container-push
+      - sh: jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)
+        name: post-build
+    promote:
+      steps:
+      - dir: ./charts/REPLACE_ME_APP_NAME
+        steps:
+        - sh: jx step changelog --version v\$(cat ../../VERSION)
+          name: changelog
+        - comment: release the helm chart
+          sh: jx step helm release
+          name: helm-release
+        - comment: promote through all 'Auto' promotion Environments
+          sh: jx promote -b --all-auto --timeout 1h --version \$(cat ../../VERSION)
+          name: jx-promote
