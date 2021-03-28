@@ -10,7 +10,7 @@ pipelines:
         comment: so we can retrieve the version in later steps
       - sh: cp /home/jenkins/.gradle/gradle.properties gradle.properties
         name: copy-gradle-properties
-      - sh: gradle -I /home/jenkins/.gradle/init.gradle build bootBuildImage -Pversion=\$(cat VERSION) --info
+      - sh: gradle -I /home/jenkins/.gradle/init.gradle build sonarqube bootBuildImage -Pversion=\$(cat VERSION) --info
         name: gradle-build
       - sh: docker image push $DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:\$(cat VERSION)
         name: container-push
