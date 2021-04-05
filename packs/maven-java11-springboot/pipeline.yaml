@@ -31,7 +31,7 @@ pipelines:
     build:
       replace: true
       steps:
-        - sh: mvn clean install sonar:sonar spring-boot:build-image
+        - sh: mvn -X clean install sonar:sonar spring-boot:build-image
           name: container-build
         - sh: docker image push $DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:\$(cat VERSION)
           name: container-push
