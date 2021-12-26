@@ -23,3 +23,6 @@ RUN bash -c "source $HOME/.sdkman/bin/sdkman-init.sh && \
 
 RUN bash -c "source $HOME/.sdkman/bin/sdkman-init.sh && \
     gu install native-image"
+
+ENV PATH="/root/.sdkman/candidates/java/current/bin:/root/.sdkman/candidates/maven/current/bin:${PATH}"
+
