@@ -1,7 +1,7 @@
 FROM ubuntu:impish
 
 # Defining default Java and Maven version
-ARG JAVA_VERSION="21.3.0.r17-grl"
+ARG JAVA_VERSION="21.2.0.r16-grl"
 ARG GRADLE_VERSION="7.3.3"
 
 # Installing basic packages
