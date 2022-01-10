@@ -36,6 +36,7 @@ spec:
             source .jx/variables.sh
             cp /tekton/creds-secrets/tekton-container-registry-auth/.dockerconfigjson /kaniko/.docker/config.json
             /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=builders/gradle7-graalvm-java17/Dockerfile --destination=$PUSH_CONTAINER_REGISTRY/$DOCKER_REGISTRY_ORG/gradle7-graalvm-java17:$VERSION
+            /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=builders/gradle7-graalvm-java11/Dockerfile --destination=$PUSH_CONTAINER_REGISTRY/$DOCKER_REGISTRY_ORG/gradle7-graalvm-java11:$VERSION
             /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=builders/maven-graalvm-java17/Dockerfile --destination=$PUSH_CONTAINER_REGISTRY/$DOCKER_REGISTRY_ORG/maven-graalvm-java17:$VERSION
   podTemplate: {}
   serviceAccountName: tekton-bot
